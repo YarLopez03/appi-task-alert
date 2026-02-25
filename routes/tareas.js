@@ -19,7 +19,6 @@ router.post("/create", (req, res) => {
 
     // Extraemos los datos enviados en el cuerpo de la petición
     const { TASKNAME, STARTDAY, ENDDAY, CATEGORIES_ID, USERS_ID } = req.body;
-
     // Estado inicial automático al crear una tarea
     const STATUS = "Creada";
 
@@ -80,18 +79,25 @@ router.get("/:ID", (req, res) => {
 // ======================================================
 router.get("/list/:USERS_ID", (req, res) => {
 
-    // Extraemos el ID del usuario desde los parámetros
     const { USERS_ID } = req.params;
 
-    // Consulta SQL para obtener todas las tareas de un usuario
-    const sql = "SELECT * FROM TASKS WHERE USERS_ID = ?";
+    const sql = `
+        SELECT 
+            ID,
+            TASKNAME,
+            DATE_FORMAT(STARTDAY, '%Y-%m-%d') AS STARTDAY,
+            DATE_FORMAT(ENDDAY, '%Y-%m-%d') AS ENDDAY,
+            STATUS,
+            CATEGORIES_ID,
+            USERS_ID
+        FROM TASKS 
+        WHERE USERS_ID = ?
+    `;
 
     db.query(sql, [USERS_ID], (err, result) => {
 
-        // Manejo de error
         if (err) return res.status(500).json({ message: "Error al obtener tareas" });
 
-        // Retornamos la lista de tareas
         res.json(result);
     });
 });
@@ -130,7 +136,6 @@ router.put("/update/:ID/:USERS_ID", (req, res) => {
 
     // Extraemos los datos a actualizar desde el body
     const { TASKNAME, STARTDAY, CATEGORIES_ID } = req.body;
-
     // Consulta SQL para actualizar la tarea (solo si pertenece al usuario)
     const sql = `
         UPDATE TASKS 

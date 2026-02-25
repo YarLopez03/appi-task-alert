@@ -61,6 +61,39 @@ router.post("/register", async (req, res) => {
 // ======================================================
 router.post("/login", (req, res) => {
 
+    const { email, password } = req.body;
+
+    const sql = "SELECT * FROM USERS WHERE email = ?";
+
+    db.query(sql, [email], async (err, result) => {
+
+        if (err) return res.status(500).json({ message: "Error en el servidor" });
+
+        if (result.length === 0) {
+            return res.status(401).json({ message: "Error en la autenticación (usuario no existe)" });
+        }
+
+        const user = result[0];
+
+        const validPass = await bcrypt.compare(password, user.PASSWORD);
+
+        if (!validPass) {
+            return res.status(401).json({ message: "Error en la autenticación (contraseña incorrecta)" });
+        }
+
+        // 🔥 RESPUESTA CORREGIDA
+        res.json({
+            message: "Autenticación satisfactoria",
+            user: {
+                ID: user.ID,
+                EMAIL: user.EMAIL
+            }
+        });
+    });
+});
+
+/*router.post("/login", (req, res) => {
+
     // Obtenemos los datos enviados desde el cliente
     const { email, password } = req.body;
 
@@ -93,7 +126,9 @@ router.post("/login", (req, res) => {
         // Si todo es correcto, autenticación exitosa
         res.json({ message: "Autenticación satisfactoria" });
     });
-});
+});*/
+
+
 
 
 // Exportamos el enrutador para usarlo en el servidor principal
