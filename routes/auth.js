@@ -47,7 +47,7 @@ router.post("/register", async (req, res) => {
             }
 
             // Cualquier otro error se considera error interno del servidor
-            return res.status(500).json({ message: "Error en el servidor" });
+            return res.status(500).json({ message: err.message });
         }
 
         // Si todo salió correctamente enviamos respuesta exitosa

@@ -2,15 +2,17 @@
 // Configuración y conexión a la base de datos MySQL
 // ======================================================
 
+require("dotenv").config();
 // Importamos el módulo mysql2, que permite conectarnos y trabajar con MySQL desde Node.js
 const mysql = require("mysql2");
 
 // Creamos una conexión a la base de datos utilizando los parámetros de configuración
 const db = mysql.createConnection({
-    host: "localhost",        // Dirección del servidor donde está instalado MySQL
-    user: "root",             // Usuario con el que nos autenticamos en MySQL
-    password: "root",         // Contraseña del usuario MySQL
-    database: "task_alert_DB" // Nombre de la base de datos a la que nos conectaremos
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
 });
 
 // Intentamos establecer la conexión con el servidor MySQL
