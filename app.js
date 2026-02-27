@@ -2,7 +2,9 @@
 // Configuración principal del servidor Express
 // ======================================================
 
-require("dotenv").config();
+if (process.env.NODE_ENV !== 'production') {
+    require("dotenv").config();
+}
 // Importamos el módulo Express para crear el servidor web
 const express = require("express");
 
