@@ -2,6 +2,7 @@
 // Configuración principal del servidor Express
 // ======================================================
 
+require("dotenv").config();
 // Importamos el módulo Express para crear el servidor web
 const express = require("express");
 
@@ -54,7 +55,7 @@ app.use("/task", tareasRoutes);
 // ======================================================
 
 // Puerto definido para ejecutar el servidor
-const PORT = 9090;
+const PORT = process.env.PORT || 9090;
 
 // Iniciamos el servidor y lo ponemos a escuchar en el puerto configurado
 app.listen(PORT, () => {
