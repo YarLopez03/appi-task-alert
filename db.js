@@ -2,7 +2,7 @@
 // Configuración y conexión a la base de datos MySQL
 // ======================================================
 
-require("dotenv").config();
+//require("dotenv").config();
 // Importamos el módulo mysql2, que permite conectarnos y trabajar con MySQL desde Node.js
 const mysql = require("mysql2");
 
