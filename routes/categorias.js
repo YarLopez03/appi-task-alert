@@ -37,7 +37,7 @@ router.post("/create", (req, res) => {
         // Manejo de error en caso de fallo en la inserción
         if (err) {
             console.log(err);
-            return res.status(500).json({ message: "Error al crear categoría" });
+            return res.status(500).json({ message: err.message });
         }
 
         // Respuesta exitosa con el ID generado automáticamente
@@ -63,7 +63,7 @@ router.get("/:ID", (req, res) => {
     db.query(sql, [ID], (err, result) => {
 
         // Manejo de error
-        if (err) return res.status(500).json({ message: "Error al obtener tarea" });
+        if (err) return res.status(500).json({ message: err.message });
 
         // Retornamos el resultado encontrado
         res.json(result);
@@ -85,7 +85,7 @@ router.get("/list/:USERS_ID", (req, res) => {
     db.query(sql, [USERS_ID], (err, result) => {
 
         // Manejo de error
-        if (err) return res.status(500).json({ message: "Error al obtener categorías" });
+        if (err) return res.status(500).json({ message: err.message });
 
         // Retornamos la lista de categorías
         res.json(result);
@@ -116,7 +116,7 @@ router.put("/update/:ID/:USERS_ID", (req, res) => {
     db.query(sql, [CATEGORYNAME, CATEGORYALERTDAYS, ID, USERS_ID], (err) => {
 
         // Manejo de error
-        if (err) return res.status(500).json({ message: "Error al actualizar categoría" });
+        if (err) return res.status(500).json({ message: err.message });
 
         // Respuesta exitosa
         res.json({ message: "Categoría actualizada correctamente" });

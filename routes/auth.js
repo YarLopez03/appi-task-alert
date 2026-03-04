@@ -67,7 +67,7 @@ router.post("/login", (req, res) => {
 
     db.query(sql, [email], async (err, result) => {
 
-        if (err) return res.status(500).json({ message: "Error en el servidor" });
+        if (err) return res.status(500).json({ message: err.message });
 
         if (result.length === 0) {
             return res.status(401).json({ message: "Error en la autenticación (usuario no existe)" });
