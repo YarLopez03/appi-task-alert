@@ -20,38 +20,33 @@ const bcrypt = require("bcryptjs");
 // ======================================================
 router.post("/register", async (req, res) => {
 
-    // Extraemos email y password enviados en el cuerpo de la petición
     const { email, password } = req.body;
 
-    // Validación básica para asegurar que ambos campos existen
     if (!email || !password) {
         return res.status(400).json({ message: "Usuario y contraseña son obligatorios" });
     }
 
-    // Encriptamos la contraseña usando bcrypt con 10 rondas de salt
-    // Esto protege la contraseña antes de almacenarla en la base de datos
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Consulta SQL para insertar un nuevo usuario en la tabla USERS
     const sql = "INSERT INTO USERS (email, password) VALUES (?, ?)";
 
-    // Ejecutamos la consulta utilizando parámetros preparados
     db.query(sql, [email, hashedPassword], (err, result) => {
 
-        // Si hay un error verificamos si es por usuario duplicado
         if (err) {
-
-            // Código específico de MySQL para entrada duplicada (email único)
             if (err.code === "ER_DUP_ENTRY") {
                 return res.status(409).json({ message: "El usuario ya existe" });
             }
-
-            // Cualquier otro error se considera error interno del servidor
             return res.status(500).json({ message: err.message });
         }
 
-        // Si todo salió correctamente enviamos respuesta exitosa
-        res.json({ message: "Usuario registrado correctamente" });
+        // ✅ Devolvemos el usuario con su ID generado automáticamente por MySQL
+        res.status(201).json({
+            message: "Usuario registrado correctamente",
+            user: {
+                ID: result.insertId,
+                EMAIL: email
+            }
+        });
     });
 });
 
