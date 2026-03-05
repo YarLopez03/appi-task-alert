@@ -1,31 +1,30 @@
 // ======================================================
 // Configuración y conexión a la base de datos MySQL
 // ======================================================
-
-//require("dotenv").config();
-// Importamos el módulo mysql2, que permite conectarnos y trabajar con MySQL desde Node.js
 const mysql = require("mysql2");
 
-// Creamos una conexión a la base de datos utilizando los parámetros de configuración
-const db = mysql.createConnection({
+// Usamos pool en lugar de createConnection para manejar
+// reconexiones automáticas y múltiples conexiones simultáneas
+const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+    port: process.env.DB_PORT,
+    waitForConnections: true,  // Espera si no hay conexiones disponibles
+    connectionLimit: 10,        // Máximo 10 conexiones simultáneas
+    queueLimit: 0               // Sin límite de cola
 });
 
-// Intentamos establecer la conexión con el servidor MySQL
-db.connect((err) => {
-
-    // Si ocurre un error durante la conexión, se lanza la excepción
-    // y se detiene la ejecución de la aplicación
-    if (err) throw err;
-
-    // Si la conexión es exitosa, mostramos un mensaje en consola
+// Verificamos que la conexión funciona al iniciar
+pool.getConnection((err, connection) => {
+    if (err) {
+        console.error("Error al conectar a MySQL:", err);
+        return;
+    }
     console.log("Conexión a MySQL exitosa");
+    connection.release(); // Devolvemos la conexión al pool
 });
 
-// Exportamos el objeto de conexión para poder reutilizarlo
-// en otros archivos del proyecto (por ejemplo: controladores o rutas)
-module.exports = db;
+// Exportamos el pool para reutilizarlo en rutas y controladores
+module.exports = pool;
